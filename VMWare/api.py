@@ -12,6 +12,11 @@ class API():
         def getRegistered():
             return vmware.getRegistered()
 
+        @route('/vmware/getEnvVar/<path:path>')
+        def getEnvVar(path):
+            return vmware.getEnvVar(path)
+
+
         @route('/vmware/getStatus/<path:path>')
         def getStatus(path):
             return vmware.getStatus(path)
@@ -29,6 +34,11 @@ class API():
         def off(path):
             vmware.machineOff(path)
             return 'OK'
+
+        @route('/vmware/reset/<path:path>')
+        def reset(path):
+            vmware.reset(path)
+            return "OK"
 
         @route('/vmware/snapshots/<path:path>')
         def snapshotCreate(path):

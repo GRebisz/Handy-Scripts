@@ -87,6 +87,11 @@ class VMWare():
         isConnected(self.sserver)
         machine = self.sserver.get_vm_by_path(name)
         machine.power_off()
+    
+    def reset(self, name):
+        isConnected(self.sserver)
+        machien = self.sserver.get_vm_by_path(name)
+        machine.reset()
 
     #Snapshots
 

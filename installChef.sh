@@ -44,29 +44,19 @@ if [ -f './chef_server.deb' ]; then
 	sudo chef-server-ctl reconfigure
 	installed="true"
 fi
-echo "Installing Chef from ./chef_server.deb"
 #Store in chef_server.deb and call dpkg
-sudo dpkg -i ./chef_server.deb
-sudo chef-server-ctl reconfigure
 useradded="false"
 if [ "$installed" == "true" ]; then
 	echo "Adding user "$username
 	sudo chef-server-ctl user-create $username $firstname $lastname $email $password --filename $outputFilename
 	useradded="true"
 fi
-echo "Adding initial chef user: " $username
-#Add user
-sudo chef-server-ctl user-create $username $firstname $lastname $email $password --filename $outputFilename
-echo "Adding initial chef organisation: " $fullname " (" $shortName ")"
 #Add org
-useradded="true"
 if [ "$useradded" == "true" ]; then
 	echo "Adding org" $fullname "("$shortName")" - $assocUser
 	echo "$outputOrgFilename"
 	sudo chef-server-ctl org-create $shortName $fullname --association_user $assocUser --filename $outputOrgFilename
 fi
-#sudo chef-server-ctl org-create $shortName $fullname --association_user $assocUser --filename $outputOrdFilename
-
 if [ "$installChefManage" == "true" ]; then
   	echo "Installing Chef Manage"
 	sudo chef-server-ctl install chef-manage --accept-license
@@ -87,5 +77,5 @@ if [ "$installChefReports" == "true" ]; then
 fi
 echo "Copying hosts certificate for external use in to an easy path"
 sudo cp /var/opt/opscode/nginx/ca/$hostname.crt ~/$hostname.crt
-sudo chmod 777 ~/$hostname.crt
+sudo chmod 750 ~/$hostname.crt
 echo "Completed"

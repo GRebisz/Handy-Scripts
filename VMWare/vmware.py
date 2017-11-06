@@ -1,5 +1,12 @@
 import json
 from pysphere import VIServer
+
+def isConnected(sserver):
+    if not sserver.is_connected():
+        print "not connected"
+    else:
+        print "connected"
+
 class VMWare():
     def __init__(self, server, username, password):
         self.server = server
@@ -9,20 +16,22 @@ class VMWare():
         self.sserver.connect(self.server, self.username, self.password)
 
     #GETS ALL SHARED VMS
-
     def getRegistered(self):
+        isConnected(self.sserver)
         return self.sserver.get_registered_vms(None, None, None, None)
 
     #SPECIFIC VM GETTER
     #NOT RECOMMENDED
     def getByName(self, name):
         try:
+            isConnected(self.sserver)
             return self.sserver.get_vm_by_name(name)
         except:
             return None
     #RECOMMENDED - Get from getRegistered method
     def getByPath(self, path):
         try:
+            isConnected(self.sserver)
             return self.sserver.get_vm_by_path(path)
         except:
             return None
@@ -31,6 +40,7 @@ class VMWare():
     #TODO: check this works for windows!?
     def getEnvVar(self, name):
         try:
+            isConnected(self.sserver)
             machine = self.sserver.get_vm_by_name(name)
             return machine.get_environment_variables()
         except:
@@ -38,6 +48,7 @@ class VMWare():
 
     def getStatus(self, name):
         try:
+            isConnected(self.sserver)
             machine = self.sserver.get_vm_by_path(name)
             return machine.get_status()
         except:
@@ -45,6 +56,7 @@ class VMWare():
 
     def getInfo(self, name):
         try:
+            isConnected(self.sserver)
             machine = self.sserver.get_vm_by_path(name)
             x = machine.get_properties()
             stat = machine.get_status()
@@ -67,17 +79,20 @@ class VMWare():
     #POWER SETTINGS
 
     def machineOn(self, name):
-        machine = self.sserver.get_vm_by_name(name)
+        isConnected(self.sserver)
+        machine = self.sserver.get_vm_by_path(name)
         machine.power_on()
 
     def machineOff(self, name):
-        machine = self.sserver.get_vm_by_name(name)
+        isConnected(self.sserver)
+        machine = self.sserver.get_vm_by_path(name)
         machine.power_off()
 
     #Snapshots
 
     def getSnapshots(self, name):
-        machine = self.sserver.get_vm_by_name(name)
+        isConnected(self.sserver)
+        machine = self.sserver.get_vm_by_path(name)
         arr = []
         for snapshot in machine.get_snapshots():
             name = snapshot.get_name()
@@ -97,16 +112,19 @@ class VMWare():
         return json.dumps(arr)
 
     def createSnapShot(self, name, snap, desc):
-        machine = self.sserver.get_vm_by_name(name)
+        isConnected(self.sserver)
+        machine = self.sserver.get_vm_by_path(name)
         machine.create_snapshot(snap, description=desc)
         return "OK"
 
     def deleteSnapShot(self, name, snap):
-        machine = self.sserver.get_vm_by_name(name)
+        isConnected(self.sserver)
+        machine = self.sserver.get_vm_by_path(name)
         machine.delete_snapshot_by_path(snap)
         return "OK"
 
     def revertSnapShot(self, name, snap):
-        machine = self.sserver.get_vm_by_name(name)
+        isConnected(self.sserver)
+        machine = self.sserver.get_vm_by_path(name)
         machine.revert_to_path(snap)
         return "OK"
